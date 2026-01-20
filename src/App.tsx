@@ -1,25 +1,25 @@
-import { useCallback, useState } from 'react';
-import './App.css';
-import { DropZone } from './components/DropZone';
-import { FileList } from './components/FileList';
-import type { GCodeFile, ProcessingState } from './types';
+import { useCallback, useState } from "react";
+import "./App.css";
+import { DropZone } from "./components/DropZone";
+import { FileList } from "./components/FileList";
+import type { GCodeFile, ProcessingState } from "./types";
 import {
   calculateTotalTime,
   FileProcessingError,
   processUploadedFile,
-} from './utils/fileProcessor';
+} from "./utils/fileProcessor";
 import {
   combineGCode,
   createCombinedZip,
   downloadBlob,
-} from './utils/gcodeCombiner';
+} from "./utils/gcodeCombiner";
 
 function App() {
   const [files, setFiles] = useState<GCodeFile[]>([]);
   const [processing, setProcessing] = useState<ProcessingState>({
     isProcessing: false,
     progress: 0,
-    message: '',
+    message: "",
   });
   const [error, setError] = useState<string | null>(null);
   const [profileConfirmed, setProfileConfirmed] = useState(false);
@@ -29,7 +29,7 @@ function App() {
     setProcessing({
       isProcessing: true,
       progress: 0,
-      message: 'Processing files...',
+      message: "Processing files...",
     });
 
     const newFiles: GCodeFile[] = [];
@@ -51,17 +51,17 @@ function App() {
           errors.push(err.message);
         } else {
           errors.push(
-            `Error processing "${file.name}": ${err instanceof Error ? err.message : 'Unknown error'}`,
+            `Error processing "${file.name}": ${err instanceof Error ? err.message : "Unknown error"}`,
           );
         }
       }
     }
 
     setFiles((prev) => [...prev, ...newFiles]);
-    setProcessing({ isProcessing: false, progress: 0, message: '' });
+    setProcessing({ isProcessing: false, progress: 0, message: "" });
 
     if (errors.length > 0) {
-      setError(errors.join('\n'));
+      setError(errors.join("\n"));
     }
   }, []);
 
@@ -92,14 +92,14 @@ function App() {
     setProcessing({
       isProcessing: true,
       progress: 0,
-      message: 'Combining G-code files...',
+      message: "Combining G-code files...",
     });
 
     try {
       setProcessing({
         isProcessing: true,
         progress: 30,
-        message: 'Combining G-code...',
+        message: "Combining G-code...",
       });
 
       const combinedGCode = combineGCode(files);
@@ -107,7 +107,7 @@ function App() {
       setProcessing({
         isProcessing: true,
         progress: 60,
-        message: 'Creating ZIP archive...',
+        message: "Creating ZIP archive...",
       });
 
       const zipBlob = await createCombinedZip(files, combinedGCode);
@@ -115,17 +115,17 @@ function App() {
       setProcessing({
         isProcessing: true,
         progress: 90,
-        message: 'Preparing download...',
+        message: "Preparing download...",
       });
 
       const totalPrints = files.reduce((sum, f) => sum + f.copies, 0);
       const filename = `combined_${totalPrints}_prints.gcode.3mf`;
       downloadBlob(zipBlob, filename);
 
-      setProcessing({ isProcessing: false, progress: 100, message: '' });
+      setProcessing({ isProcessing: false, progress: 100, message: "" });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to combine files');
-      setProcessing({ isProcessing: false, progress: 0, message: '' });
+      setError(err instanceof Error ? err.message : "Failed to combine files");
+      setProcessing({ isProcessing: false, progress: 0, message: "" });
     }
   }, [files]);
 
@@ -172,7 +172,7 @@ function App() {
         {/* Main Content */}
         <main className="space-y-5">
           {/* Drop Zone */}
-          <div className="animate-rise" style={{ animationDelay: '0.1s' }}>
+          <div className="animate-rise" style={{ animationDelay: "0.1s" }}>
             <DropZone
               onFilesSelected={handleFilesSelected}
               disabled={processing.isProcessing}
@@ -257,7 +257,7 @@ function App() {
           )}
 
           {/* File List */}
-          <div className="animate-rise" style={{ animationDelay: '0.15s' }}>
+          <div className="animate-rise" style={{ animationDelay: "0.15s" }}>
             <FileList
               files={files}
               onReorder={handleReorder}
@@ -271,7 +271,7 @@ function App() {
           {files.length > 0 && (
             <div
               className="space-y-4 animate-rise"
-              style={{ animationDelay: '0.2s' }}
+              style={{ animationDelay: "0.2s" }}
             >
               {/* Stats */}
               <div className="cozy-card p-5">
@@ -355,7 +355,7 @@ function App() {
                       </svg>
                     </div>
                     <svg
-                      className={`absolute top-1 left-1 w-4 h-4 text-[var(--color-bg-deep)] transition-opacity duration-200 ${profileConfirmed ? 'opacity-100' : 'opacity-0'}`}
+                      className={`absolute top-1 left-1 w-4 h-4 text-[var(--color-bg-deep)] transition-opacity duration-200 ${profileConfirmed ? "opacity-100" : "opacity-0"}`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -465,7 +465,7 @@ function App() {
         <footer className="mt-16 text-center">
           <div className="divider-warm mb-6" />
           <p className="text-sm text-[var(--color-text-muted)] mb-2">
-            Works with A1, A1 Mini, P1S, and X1C
+            Tested to work with A1
           </p>
           <p className="text-xs text-[var(--color-text-muted)]">
             Everything runs locally in your browser — your files never leave
